@@ -26,7 +26,7 @@ export default function LandlordBillsListScreen() {
             style={{ paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: 20, backgroundColor: filter === f ? colors.primary : colors.white }}
           >
             <BhausText style={{ color: filter === f ? colors.white : colors.neutralMid, fontSize: 12, fontWeight: '600' }}>
-              {f.replace('_', ' ')}
+              {f.replace(/_/g, ' ')}
             </BhausText>
           </TouchableOpacity>
         ))}

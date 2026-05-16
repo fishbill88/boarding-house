@@ -149,7 +149,7 @@ export interface Notification {
   userId: string;
   title: string;
   body: string;
-  type: string;
+  type: NotificationType | string;
   isRead: boolean;
   data: Record<string, unknown>;
   createdAt: string;
