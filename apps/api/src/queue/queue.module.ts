@@ -14,7 +14,12 @@ import Redis from 'ioredis';
       inject: ['REDIS_CONNECTION'],
       useFactory: (connection: Redis) => new Queue('billing', { connection }),
     },
+    {
+      provide: 'NOTIFICATIONS_QUEUE',
+      inject: ['REDIS_CONNECTION'],
+      useFactory: (connection: Redis) => new Queue('notifications', { connection }),
+    },
   ],
-  exports: ['REDIS_CONNECTION', 'BILLING_QUEUE'],
+  exports: ['REDIS_CONNECTION', 'BILLING_QUEUE', 'NOTIFICATIONS_QUEUE'],
 })
 export class QueueModule {}

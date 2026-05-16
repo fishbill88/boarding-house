@@ -133,3 +133,24 @@ export interface Appliance {
   createdAt: string;
   updatedAt: string;
 }
+
+export enum NotificationType {
+  PAYMENT_SUBMITTED = 'payment-submitted',
+  PAYMENT_APPROVED = 'payment-approved',
+  PAYMENT_REJECTED = 'payment-rejected',
+  APPLIANCE_APPROVED = 'appliance-approved',
+  APPLIANCE_REJECTED = 'appliance-rejected',
+  AUTO_OVERDUE = 'auto-overdue',
+  BILL_REMINDER = 'bill-reminder',
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  title: string;
+  body: string;
+  type: NotificationType | string;
+  isRead: boolean;
+  data: Record<string, unknown>;
+  createdAt: string;
+}
