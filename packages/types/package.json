@@ -1,0 +1,11 @@
+{
+  "name": "@bhaus/types",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "echo 'types lint: no-op'",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "echo 'types test: no-op'"
+  }
+}

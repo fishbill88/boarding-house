@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  phone         String?
+  fullName      String
+  passwordHash  String
+  role          UserRole
+  avatarUrl     String?
+  isActive      Boolean        @default(true)
+  isVerified    Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  tenantProfile TenantProfile?
+  house         House?
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model House {
+  id             String         @id @default(cuid())
+  houseCode      String         @unique
+  name           String
+  address        String
+  landlordId     String         @unique
+  landlord       User           @relation(fields: [landlordId], references: [id])
+  settings       HouseSettings?
+  tenants        TenantProfile[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model HouseSettings {
+  id                  String   @id @default(cuid())
+  houseId             String   @unique
+  house               House    @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  rentAmount          Decimal  @default(0)
+  rentDueDay          Int      @default(1)
+  electricityEnabled  Boolean  @default(true)
+  waterEnabled        Boolean  @default(true)
+  notifyDaysBefore    Int      @default(3)
+  gracePeriodDays     Int      @default(0)
+  customBillings      Json     @default("[]")
+  updatedAt           DateTime @updatedAt
+}
+
+model TenantProfile {
+  id          String        @id @default(cuid())
+  userId      String        @unique
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  houseId     String
+  house       House         @relation(fields: [houseId], references: [id])
+  roomNumber  String?
+  moveInDate  DateTime?
+  validIdUrl  String?
+  status      TenantStatus  @default(PENDING)
+  approvedAt  DateTime?
+  approvedBy  String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  appliances  Appliance[]
+  bills       Bill[]
+}
+
+model Appliance {
+  id               String          @id @default(cuid())
+  tenantId         String
+  tenant           TenantProfile   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  houseId          String
+  name             String
+  description      String?
+  watts            Int?
+  registrationFee  Decimal         @default(0)
+  billingType      BillingType     @default(FREE)
+  status           ApplianceStatus @default(PENDING)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model Bill {
+  id            String        @id @default(cuid())
+  tenantId      String
+  tenant        TenantProfile @relation(fields: [tenantId], references: [id])
+  houseId       String
+  type          BillType
+  amount        Decimal
+  dueDate       DateTime
+  billingMonth  Int
+  billingYear   Int
+  status        BillStatus    @default(UNPAID)
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  payments      Payment[]
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  billId          String
+  bill            Bill          @relation(fields: [billId], references: [id])
+  tenantId        String
+  amount          Decimal
+  proofImageUrl   String?
+  submittedAt     DateTime      @default(now())
+  reviewedAt      DateTime?
+  status          PaymentStatus @default(PENDING)
+  rejectionReason String?
+  addedByLandlord Boolean       @default(false)
+}
+
+enum UserRole {
+  TENANT
+  LANDLORD
+}
+
+enum TenantStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BillingType {
+  ONE_TIME
+  MONTHLY
+  FREE
+}
+
+enum ApplianceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BillType {
+  RENT
+  ELECTRIC
+  WATER
+  APPLIANCE
+  CUSTOM
+}
+
+enum BillStatus {
+  UNPAID
+  PENDING_APPROVAL
+  PAID
+  OVERDUE
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
