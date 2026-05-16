@@ -17,6 +17,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter api prisma:generate
       - run: pnpm turbo lint typecheck
 
   test-api:
