@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "BHAUS",
+    "slug": "bhaus",
+    "scheme": "bhaus",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#00978A"
+    },
+    "userInterfaceStyle": "light",
+    "plugins": ["expo-router"],
+    "assetBundlePatterns": ["**/*"]
+  }
+}
