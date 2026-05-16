@@ -63,13 +63,15 @@ export class TenantsService {
     const tenant = await this.prisma.tenantProfile.findUnique({ where: { id } });
     if (!tenant || tenant.houseId !== houseId) throw new NotFoundException('Tenant not found');
 
-    return this.prisma.tenantProfile.update({
+    const profile = await this.prisma.tenantProfile.update({
       where: { id },
       data: {
         status: TenantStatus.REJECTED,
-        approvedBy: `${userId}:${dto.reason}`,
+        approvedBy: userId,
       },
     });
+
+    return { ...profile, rejectionReason: dto.reason };
   }
 
   async deactivate(id: string, userId: string, role: UserRole) {

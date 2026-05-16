@@ -53,7 +53,7 @@ pnpm install
 Copy and fill API environment variables:
 
 ```bash
-cp /home/runner/work/boarding-house/boarding-house/apps/api/.env.example /home/runner/work/boarding-house/boarding-house/apps/api/.env
+cp apps/api/.env.example apps/api/.env
 ```
 
 ### Run Development

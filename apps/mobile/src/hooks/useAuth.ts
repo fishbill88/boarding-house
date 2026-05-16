@@ -42,7 +42,9 @@ export const useAuth = () => {
 
   const logout = async () => {
     const refreshToken = useAuthStore.getState().refreshToken;
-    await authApi.logout(refreshToken);
+    if (refreshToken) {
+      await authApi.logout(refreshToken);
+    }
     await clearSession();
   };
 
