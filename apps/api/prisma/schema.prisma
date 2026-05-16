@@ -94,20 +94,22 @@ model Appliance {
 }
 
 model Bill {
-  id            String        @id @default(cuid())
-  tenantId      String
-  tenant        TenantProfile @relation(fields: [tenantId], references: [id])
-  houseId       String
-  type          BillType
-  amount        Decimal
-  dueDate       DateTime
-  billingMonth  Int
-  billingYear   Int
-  status        BillStatus    @default(UNPAID)
-  notes         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  payments      Payment[]
+  id                  String        @id @default(cuid())
+  tenantId            String
+  tenant              TenantProfile @relation(fields: [tenantId], references: [id])
+  houseId             String
+  type                BillType
+  amount              Decimal
+  dueDate             DateTime
+  billingMonth        Int
+  billingYear         Int
+  status              BillStatus    @default(UNPAID)
+  notes               String?
+  lastReminderSentAt  DateTime?
+  applianceId         String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  payments            Payment[]
 }
 
 model Payment {
@@ -117,11 +119,23 @@ model Payment {
   tenantId        String
   amount          Decimal
   proofImageUrl   String?
+  notes           String?
   submittedAt     DateTime      @default(now())
   reviewedAt      DateTime?
   status          PaymentStatus @default(PENDING)
   rejectionReason String?
   addedByLandlord Boolean       @default(false)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  type      String
+  isRead    Boolean  @default(false)
+  data      Json     @default("{}")
+  createdAt DateTime @default(now())
 }
 
 enum UserRole {
